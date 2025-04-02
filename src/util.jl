@@ -144,3 +144,19 @@ Returns the tensor product of multiple vectors in Matrix form. Multiplications a
     but the elements of the product are stored in each matrix row.
 """
 ⨂m(vectors...) = hcat(collect.(vcat(collect(Base.product(vectors...))...))...)'
+
+
+
+# find files in dir according to pattern
+using Glob
+function rdir(dir, patterns)
+    results = String[]
+    patterns = [Glob.FilenameMatch("*" * p * "*") for p in patterns]
+    for (root, _, files) in walkdir(dir)
+        fpaths = joinpath.(root, files)
+        length(fpaths) == 0 && continue
+        matches = length(patterns) > 0 ? [filter(x -> occursin(p, x), fpaths) for p in patterns] : fpaths
+        push!(results, vcat(matches...)...)
+    end
+    results
+end

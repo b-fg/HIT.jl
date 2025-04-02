@@ -4,9 +4,10 @@ import EllipsisNotation: Ellipsis; const dots = Ellipsis()
 import WaterLily: dot
 
 include("util.jl")
+include("dataset.jl")
 
 export generate_hit, spectrum, cbc_spectrum, plot_spectra!, ω_viz, σ_contour, filter_sharp
-export write!, load!, set_plots_style!, δ1, ⨂, ⨂m
+export write!, load!, write_x!, write_y!, load, load_x, load_y, Dataset, set_plots_style!, δ1, ⨂, ⨂m
 
 """
     generate_hit(L,N,M; mem=Array)
