@@ -23,14 +23,14 @@ function hit(L, N, M; load=false, length_scale=1, velocity_scale=1, cbc_path="cb
 end
 
 T = Float32 # run with single (Float32) or double (Float64) precision
-mem = CuArray # run on CPU (Array) or GPU (CuArray)
+mem = Array # run on CPU (Array) or GPU (CuArray)
 
 # Experiment: Comte-Bellot & Corrsin 1971, https://doi.org/10.1017/S0022112071001599
 M = 5.08/100 # grid size [m]
 L = 9*2π/100 # length of HIT cube [m], L = 11M
 velocity_scale = 10 # velocity related to the bulk flow (U₀ in paper) [m/s]
 
-N = 2^5 # cells per direction
+N = 2^6 # cells per direction
 modes = 2^11 # number of modes for initial isotropic turbulence condition, following Saad et al 2016, https://doi.org/10.2514/1.J055230
 ν_air = 1.48e-5 # same as Rozema et al 2015, https://doi.org/10.1063/1.4928700 (dry air at 15C)
 Re = M*velocity_scale/ν_air # 33866
@@ -47,7 +47,7 @@ dt = 0.5 # constant time step (not in CTU!)
 Cs_str = @sprintf("%2.2f", Cs)
 udf = Cs > 0 ? sgs! : nothing
 cbc_path = joinpath(@__DIR__, "data/", "cbc_spectrum.dat")
-set_plots_style!(; fontsize=22, linewidth=2)
+set_plots_style!(; fontsize=18, linewidth=2)
 WaterLily.CFL(a::Flow;Δt_max=10) = dt # set a constant time step
 save, load = false, true
 
@@ -87,9 +87,6 @@ sim = main(); return
 ## Visualization
 # N_t,n = size_u(sim.flow.u)
 # S = zeros(T, N_t..., n, n) |> mem
-## 3D
-# viz!(sim, ω!; t_end=sim_time(sim)+400, λ, udf, udf_kwargs=Dict(:νₜ=>smagorinsky, :S=>S, :Cs=>Cs, :Δ=>Δ),
-#     isovalue=0.14, algorithm=:iso, colormap=[:green],); return
-## 2D
-# viz!(sim, ω!; t_end=sim_time(sim)+400, d=2,
-#     λ, udf, udf_kwargs=Dict(:νₜ=>smagorinsky, :S=>S, :Cs=>Cs, :Δ=>Δ)); return
+# viz!(sim; duration=100, λ, udf, udf_kwargs=Dict(:νₜ=>smagorinsky, :S=>S, :Cs=>Cs, :Δ=>Δ),
+#     isovalue=0.14, algorithm=:iso, colormap=[:purple], verbose=true
+# )

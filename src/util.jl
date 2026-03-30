@@ -18,6 +18,7 @@ set_plots_style!(; fontsize=14, linewidth=1) = Plots.default(
     legendfontsize = fontsize,
     tickfontsize = fontsize,
     labelfontsize = fontsize,
+    legend = :bottomleft,
 )
 
 δ1(i,::Val{N}) where N = CartesianIndex(ntuple(j -> j==i ? 2 : 1, N))
@@ -51,12 +52,6 @@ function plot_spectra!(p, L, N, u;
     )
     !isnothing(fig_path) && (savefig(p, fig_path); println("Figure stored in $(fig_path)"))
     return p
-end
-
-function ω!(cpu_array, sim)
-    a,dt = sim.flow.σ,sim.L/sim.U
-    WaterLily.@inside a[I] = WaterLily.ω_mag(I,sim.flow.u)
-    copyto!(cpu_array, a[inside(a)]) # copy to CPU
 end
 
 """
