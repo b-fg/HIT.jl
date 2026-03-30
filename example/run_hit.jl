@@ -47,7 +47,7 @@ dt = 0.5 # constant time step (not in CTU!)
 Cs_str = @sprintf("%2.2f", Cs)
 udf = Cs > 0 ? sgs! : nothing
 cbc_path = joinpath(@__DIR__, "data/", "cbc_spectrum.dat")
-set_plots_style!(; linewidth=2)
+set_plots_style!(; fontsize=22, linewidth=2)
 WaterLily.CFL(a::Flow;Δt_max=10) = dt # set a constant time step
 save, load = false, true
 

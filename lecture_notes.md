@@ -2,11 +2,13 @@
     - https://www.youtube.com/watch?v=AHBrvxodARM
     - https://www.youtube.com/watch?v=c8zKWaxohng
     - https://www.youtube.com/watch?v=hz7UjN_vYuw
+    - https://www.youtube.com/watch?v=BKJGaWzHFkA
 
 1. **Validating a turbulence model with homogeneous isotropic turbulence (HIT)**
     <p align="center">
         <video width="360" height="360" controls=0 preload="true" autoplay="autoplay">
-            <source src="https://surfdrive.surf.nl/files/index.php/s/bNtEg64b8JrWWdV/download" type="video/mp4">
+            <!-- <source src="https://surfdrive.surf.nl/files/index.php/s/bNtEg64b8JrWWdV/download" type="video/mp4"> -->
+            <source src="./assets/hit_compressed.mp4" type="video/mp4">
         </video>
     </p>
 
@@ -39,23 +41,41 @@
     \end{pmatrix}
     $$
 
-    The **Boussinesq approximation** proposes a closure such as
+    The **Boussinesq approximation** proposes a closure such that
 
     $$
-    \tau_{ij}-\dfrac{1}{3}\tau_{ii}\delta_{ij}=-2\nu_t\tilde{\mathbf{S}}
+     \tau_{ij}^{d,\text{sgs}} = \tau_{ij}^{\text{sgs}}-\dfrac{1}{3}\tau_{kk}^{\text{sgs}}\delta_{ij}:=-2\mu_t\tilde{S}_{ij}
     $$
 
-    where $\tilde{\mathbf{S}}=(\nabla\otimes\boldsymbol{\tilde u}+\boldsymbol{\tilde u}\otimes\nabla)/2$ is the resolved rate-of-strain tensor, and the eddy viscosity $\nu_t$ can then be simply plugged into the filtered Navier-Stokes as
+    where $\tilde{S}_{ij}=\dfrac{1}{2}\left(\dfrac{\partial \tilde{u}_i}{\partial x_j}+\dfrac{\partial \tilde{u}_j}{\partial x_i}\right)$ is the resolved rate-of-strain tensor. This approximation is analogous to the definition of the stress tensor in the Navier&mdash;Stokes equations:
+
+    $$
+    \sigma_{ij} = -p\delta_{ij} + \epsilon_{ij}= -p\delta_{ij} + \mu\left(\dfrac{\partial u_i}{\partial x_j}+\dfrac{\partial u_j}{\partial x_i}\right)=-p\delta_{ij} + 2\mu S_{ij}
+    $$
+    $$
+    \sigma_{ij}^d = \sigma_{ij}-\dfrac{1}{3}\sigma_{kk}\delta_{ij}=2\mu\tilde{S}_{ij}
+    $$
+
+    Thus, the eddy viscosity, $\nu_t=\mu_t/\rho$, can then be simply plugged into the filtered Navier-Stokes as
 
     $$
     \dfrac{\partial\boldsymbol{\tilde u}}{\partial t}+(\boldsymbol{\tilde u}\cdot\nabla)\boldsymbol{\tilde u}=-\dfrac{1}{\tilde \rho}\nabla \tilde p+(\nu+\nu_t)\nabla^2\boldsymbol{\tilde u}
     $$
 
+    noting that the isotropic part is automatically absorbed in the corrected pressure pressure term
+
+    $$
+    \tilde{p}^*=\tilde{p}+\dfrac{1}{3}\tau_{kk}^{\text{sgs}}=\tilde{p}+\dfrac{2}{3}k
+    $$
+    where the turbulent kinetic energy is defined as $k=\dfrac{1}{2}\tau_{kk}^{\text{sgs}}$.
+
     The Smagorinsky-Lily model finally provides a closure for the eddy viscosity $\nu_t$
 
     $$
-    \nu_t=(C_S\Delta)^2|\tilde{\mathbf{S}}|=(C_S\Delta)^2\sqrt{2\tilde{S}_{ij}\tilde{S}_{ij}}
+    \nu_t=(C_S\Delta)^2|\tilde{\mathbf{S}}|=(C_S\Delta)^2\sqrt{2\tilde{S}_{ij}\tilde{S}_{ij}},
     $$
+
+    building on the idea that the turbulent viscosity is a mixing length model based on a local filter width $\Delta$ and the mean-rate-of-strain tensor magnitude.
 
 1. **The HIT experiment**
 
@@ -84,7 +104,7 @@
     \boldsymbol{\kappa} = \kappa_0\boldsymbol{n}
     $$
 
-    where $\kappa_0=2\pi/L$ is the lowest wavenumber, $\kappa_\mathrm{max}=2\pi/(2L/N)=\pi/\Delta x$ is the highest wavenumber (minimum 2 points per wave), and $\boldsymbol{n}_i=-N/2,...,N/2$ is an integer vector per direction.
+    where $\kappa_0=2\pi/L$ is the lowest wavenumber, $\kappa_\mathrm{max}=2\pi/(2L/N)=\pi/\Delta x$ is the highest wavenumber (minimum 2 points per wave), and $\boldsymbol{n}_i=-N/2,N/2+1,...,N/2$ is an integer vector per direction.
 
     The fast Fourier transform (FFT) can be used to compute the DFT of the velocity field, $\boldsymbol{\hat{u}}(\boldsymbol{\kappa},t)$, so that we can compute $E(\kappa,t)$ doing a spherical integration over each target wavenumber $\kappa=|\boldsymbol{\kappa}|$
 

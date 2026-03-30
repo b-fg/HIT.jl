@@ -1,6 +1,7 @@
 .vscode/
 Manifest.toml
 *.pdf
+*.svg
 *.png
 !assets/**
 *.mp4
