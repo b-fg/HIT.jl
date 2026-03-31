@@ -50,10 +50,10 @@
     where $\tilde{S}_{ij}=\dfrac{1}{2}\left(\dfrac{\partial \tilde{u}_i}{\partial x_j}+\dfrac{\partial \tilde{u}_j}{\partial x_i}\right)$ is the resolved rate-of-strain tensor. This approximation is analogous to the definition of the stress tensor in the Navier&mdash;Stokes equations:
 
     $$
-    \sigma_{ij} = -p\delta_{ij} + \epsilon_{ij}= -p\delta_{ij} + \mu\left(\dfrac{\partial u_i}{\partial x_j}+\dfrac{\partial u_j}{\partial x_i}\right)=-p\delta_{ij} + 2\mu S_{ij}
+    \sigma_{ij} = -p\delta_{ij} + \tau_{ij}= -p\delta_{ij} + \mu\left(\dfrac{\partial u_i}{\partial x_j}+\dfrac{\partial u_j}{\partial x_i}\right)=-p\delta_{ij} + 2\mu S_{ij}
     $$
     $$
-    \sigma_{ij}^d = \sigma_{ij}-\dfrac{1}{3}\sigma_{kk}\delta_{ij}=2\mu\tilde{S}_{ij}
+    \sigma_{ij}^d = \sigma_{ij}-\dfrac{1}{3}\sigma_{kk}\delta_{ij}=2\mu S_{ij}
     $$
 
     Thus, the eddy viscosity, $\nu_t=\mu_t/\rho$, can then be simply plugged into the filtered Navier-Stokes as
