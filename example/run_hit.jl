@@ -23,14 +23,14 @@ function hit(L, N, M; load=false, length_scale=1, velocity_scale=1, cbc_path="cb
 end
 
 T = Float32 # run with single (Float32) or double (Float64) precision
-mem = Array # run on CPU (Array) or GPU (CuArray)
+mem = CuArray # run on CPU (Array) or GPU (CuArray)
 
 # Experiment: Comte-Bellot & Corrsin 1971, https://doi.org/10.1017/S0022112071001599
 M = 5.08/100 # grid size [m]
 L = 9*2π/100 # length of HIT cube [m], L = 11M
 velocity_scale = 10 # velocity related to the bulk flow (U₀ in paper) [m/s]
 
-N = 2^6 # cells per direction
+N = 2^7 # cells per direction
 modes = 2^11 # number of modes for initial isotropic turbulence condition, following Saad et al 2016, https://doi.org/10.2514/1.J055230
 ν_air = 1.48e-5 # same as Rozema et al 2015, https://doi.org/10.1063/1.4928700 (dry air at 15C)
 Re = M*velocity_scale/ν_air # 33866
@@ -58,12 +58,16 @@ function main()
     t_str = @sprintf("%2.2f", t0_ctu)
     save && save!(joinpath(@__DIR__,"data/", "flow_N$(N)_t$(t_str).jld2"), sim.flow)
     p = plot_spectra!(Plots.plot(dpi=600, title=L"$N=%$(N)$"), L, N, u_inside|>Array;
-        cbc_path, cbc_t=1, label=L"t=%$t_str"
+        cbc_path, cbc_t=1, label=L"t=%$t_str",
+        fig_path=joinpath(@__DIR__,"plots/", "Ek_N$(N)_modes$(modes)_Cs$(Cs_str)_$(λ)_t$(t_str).png"),
     )
 
     N_t,n = size_u(sim.flow.u)
     S = zeros(T, N_t..., n, n) |> mem # working array holding a tensor for each cell
-
+    # viz!(sim; λ, udf, udf_kwargs=Dict(:νₜ=>smagorinsky, :S=>S, :Cs=>Cs, :Δ=>Δ),
+    #     isovalue=0.14, algorithm=:iso, colormap=[:purple], verbose=true
+    # )
+    # @assert false
     sim_step!(sim, t1_ctu-t0_ctu; verbose=true, remeasure=false, λ, udf, νₜ=smagorinsky, S, Cs, Δ)
     t_str = @sprintf("%2.2f", sim_time(sim)+t0_ctu)
     save && save!(joinpath(@__DIR__,"data/", "flow_N$(N)_t$(t_str).jld2"), sim.flow)
@@ -85,8 +89,8 @@ end
 sim = main(); return
 
 ## Visualization
-# N_t,n = size_u(sim.flow.u)
-# S = zeros(T, N_t..., n, n) |> mem
-# viz!(sim; duration=100, λ, udf, udf_kwargs=Dict(:νₜ=>smagorinsky, :S=>S, :Cs=>Cs, :Δ=>Δ),
-#     isovalue=0.14, algorithm=:iso, colormap=[:purple], verbose=true
-# )
+N_t,n = size_u(sim.flow.u)
+S = zeros(T, N_t..., n, n) |> mem
+viz!(sim; duration=1000, λ, udf, udf_kwargs=Dict(:νₜ=>smagorinsky, :S=>S, :Cs=>Cs, :Δ=>Δ),
+    isovalue=0.14, algorithm=:iso, colormap=[:purple], verbose=true
+)
