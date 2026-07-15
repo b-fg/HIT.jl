@@ -50,11 +50,12 @@ and this should produce the above plot of the energy cascade compared to the exp
 ## Playing with the `run_hit.jl` script
 - Simulations can be run in either a CPU (default) or GPU. To run on GPU, in the script we add `using CUDA` and change `T=Array` to `T=CuArray`.
 - Run with the desired resolution by changing `N`, or via the environment variable, e.g. `HIT_N=128 julia --project run_hit.jl`.
-- Choose the number of spectral modes considered in the intitial velocity vector field by modifying `modes`.
+- Choose the number of spectral modes considered in the initial velocity vector field by modifying `modes`.
 - Choose to run without/with the Smagorinsky-Lilly model by setting its constant `Cs = 0` (no explicit turbulence model), or a positive value of `Cs` for the model to be activated (and use that constant value).
 - Choose the discretization scheme of the convective term to use a [central difference scheme](https://en.wikipedia.org/wiki/Central_differencing_scheme) `λ = cds` or the [QUICK](https://en.wikipedia.org/wiki/QUICK_scheme) scheme `λ = quick`.
 - Visualize the flow using the `viz!` routine, which generates a 3D plot of constant vorticity magnitude structures. For example
 ```julia
-viz!(sim, ω!; t_end=sim_time(sim)+400, isovalue=0.1, algorithm=:iso, colormap=[:green])
+viz!(sim; duration=400, udf, udf_kwargs=Dict(:νₜ=>smagorinsky, :S=>S, :Cs=>Cs, :Δ=>Δ),
+    isovalue=0.14, algorithm=:iso, colormap=[:purple], verbose=true)
 ```
-generates the 3D plot and runs the simulation for 200 convective time units. You can change the isosurface value of the vorticity magnitude with the `isovalue` parameter.
+generates the 3D plot and runs the simulation for 400 convective time units. You can change the isosurface value of the vorticity magnitude with the `isovalue` parameter.
